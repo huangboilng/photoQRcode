@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>会诊申请</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="http://www.ceshi.com/public/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="http://www.ceshi.com/public/icheck/css/square/blue.css" />
+	
+<style>
+li{ list-style:none;}
+.modal-search-listbox, #sun-json-show{ display:none; margin-top:20px;}
+#sun-json-show{padding-left: 83px;}
+.sun-json-show-delete{ cursor:pointer;}
+#myModal{width:800px;}
+#QRCode-box{display:none;padding: 20px; text-align: center;}
+#QRCode-bigbox{padding-left: 83px;    margin-top: -35px;}
+.qrupload-li{ margin-top: 27px !important;}
+.QRCode-box-tableimg{ width:30px; height:30px;}
+.dg-main-center{float:left; width: 100%;  margin-top: 25px; border:1px solid #d4d4d4; background-color:#e8e8e8; padding:20px 20px 20px 0;}
+.jiugrid{  
+	text-align: right; 
+	width: 188px;
+	float: left;
+	overflow: hidden;
+	position: relative;
+	height: 132px;
+	margin-left:20px;
+	margin-bottom:20px;
+}
+.jiugrid .icheckbox_square-blue{ float: left; margin-top: 50px;}
+.jiugrid img {
+	width:132px; height:132px;
+}
+.jiugrid input{
+	position: absolute;
+	left: 0; top:48%;
+}
+
+.dg-main-top{height:40px; line-height:40px; font-size:12px;}
+.dg-main-bottom{
+	margin-top: 20px; width:100%;
+	display: inline-block;
+}
+
+.btnok, #open-dialog, #QRCode-btn{    
+	background: #00b7ee;
+	border-radius: 0;
+	width: 100px;
+	height: 40px;
+	font-size: 12px;
+	color: #fff;
+	display: inline-block;
+	cursor: pointer;
+	border: none;
+	text-shadow: none;
+}
+.btnok:hover, #open-dialog:hover, #QRCode-btn:hover{background: #00a2d4;color:#fff;}
+#myModal{ left:40%;}
+.AccForm .Form_Default{
+	background-color: transparent;
+	border: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	-webkit-transition: none;
+	-moz-transition: none;
+	-o-transition: none;
+	transition: none;
+	display: inline-block;
+	height: auto;
+	padding: 0;
+	margin-bottom: 0;
+	vertical-align: sub;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+}
+#code{ float:left; margin-right:36px;}
+.codemagbox{ float:left;}
+.codemagbox p{    
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+	margin-bottom: 20px;color:#747474;
+}
+</style>
+</head>
+<div class="bodymain">
+	<ul>
+		<li class="qrupload-li"><label>扫码上传:</label>
+			<div id="QRCode-bigbox">
+				<button class="btn" type="button" id="QRCode-btn">扫码上传</button>
+				<div id="QRCode-box">
+					<div id="code"></div>
+					<div class="codemagbox">
+						<p>使用手机微信扫一扫功能</p>
+						<p>扫描图中二维码打开照片上传功能</p>
+					</div>
+					<div class="dg-main-center">
+
+					<!--<div class="jiugrid"><input type="checkbox" class="QRcheckbox"><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=611834776,3845409433&amp;fm=58"></div><div class="jiugrid"><input type="checkbox" checked="" class="QRcheckbox"><img src="http://cdn.bitcare.cn/Image/OnlineClinic/Consultation/c694c35c-06bf-435b-bab5-f36f0b4cd917_s.png"></div><div class="jiugrid"><input type="checkbox" class="QRcheckbox"><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2823961627,3572677526&amp;fm=58"></div>-->
+
+					</div>
+					<div class="dg-main-bottom">
+						<button type="button" class="btn btn-default btnok">确认</button>
+					</div>
+				</div>
+			</div>	
+		</li>
+		<li>
+			<label>浏览:</label>
+			<button type="button" data-toggle="modal" id="open-dialog" class="btn">云影像</button>
+		</li>
+		<li>
+			<div id="sun-json-show">
+				<table class="table table-bordered">
+				 <thead>
+					<tr>
+					  <th>患者姓名</th>
+					  <th>患者性别</th>
+					  <th>患者年龄</th>
+					  <th>影像类别</th>
+					  <th>采集时间</th>
+					  <th>报告时间</th>
+					  <th>机构名称</th>
+					  <th>查看</th>
+					  <th>删除</th>	
+					</tr>
+				  </thead>
+				  <tbody class="sun-json-show-tbody">
+	
+				  </tbody>
+				</table>
+			</div>
+		</li>
+	</ul>
+</div>
+
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">云影像列表</h3>
+  </div>
+  <div class="modal-body">
+		<div class="modal-search-box">
+		  <input type="text" class="input-medium search-query" id="search-input-bianhao" placeholder="输入患者编号">
+		  <button id="search-bianhao" class="btn">搜索</button>
+		</div>
+		<div class="modal-search-listbox">
+		    <table class="table table-bordered">
+			 <thead>
+				<tr>
+				  <th>
+				    <label class="checkbox inline">
+					  <input type="checkbox" id="checkAll">
+					</label>
+				  </th>	
+				  <th>患者姓名</th>
+				  <th>患者性别</th>
+				  <th>患者年龄</th>
+				  <th>影像类别</th>
+				  <th>采集时间</th>
+				  <th>报告时间</th>
+				  <th>机构名称</th>
+				  <th>查看</th>
+				</tr>
+			  </thead>
+			  <tbody class="modal-search-listbox-tbody">
+
+			  </tbody>
+			</table>
+		</div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" id="modal-ok-json">ok</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>	
+  </div>
+</div>
+
+<script src="http://www.ceshi.com/public/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="http://www.ceshi.com/public/js/bootstrap.min.js"></script>
+<script src="http://www.ceshi.com/public/icheck/js/icheck.min.js"></script>
+
+<script type="text/javascript" src="http://www.ceshi.com/public/js/jquery.qrcode.min.js"></script>
+
+<script type="text/javascript">
+
+$(function() {
+
+	function getRootPath(){
+		//获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+		var curWwwPath=window.document.location.href;
+		//获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+		var pathName=window.document.location.pathname;
+		var pos=curWwwPath.indexOf(pathName);
+		//获取主机地址，如： http://localhost:8083
+		var localhostPaht=curWwwPath.substring(0,pos);
+		//获取带"/"的项目名，如：/uimcardprj
+		var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+		return(localhostPaht+projectName);
+	}
+	rootPath=getRootPath();
+
+	//用于保存用户选择的云影像数据checkbox   STUDY_KEY
+	var objJson = {}, objchangJson = {}; 
+    objJson.list = [];  objchangJson.list = [];
+	
+	$("#open-dialog").click(function(){
+		objchangJson.list.length = 0;
+		$(".modal-search-listbox-tbody input[name=\"subBox\"]").attr("checked",false);
+		$("#checkAll").attr("checked",false);
+		$('#myModal').modal();
+	});
+
+	$("#checkAll").click(function() {
+		$('.modal-search-listbox-tbody input[name="subBox"]').prop("checked", this.checked);
+	});
+	  
+	$('.modal-search-listbox-tbody').on("click",".json-add",function() { 
+		var $subs = $(".json-add"), onejsonflag, that = this, newjsonflag = [];
+		$("#checkAll").prop("checked" , $subs.length == $subs.filter(":checked").length ? true :false);
+	});
+	
+    $("#modal-ok-json").click(function(){
+		objchangJson.list = [];
+		$(".json-add:checkbox").each(function(){
+			if(this.checked == true){
+				objchangJson.list.push(data.list[$(this).index('.json-add')]);			
+			}		
+		});
+
+		for (var i=0;i<objchangJson.list.length;i++){		
+		    var isFound = false;
+			for (var j=0;j<objJson.list.length;j++){
+					if(objchangJson.list[i].STUDY_INSTANCE_UID == objJson.list[j].STUDY_INSTANCE_UID){
+						isFound = true;
+						break;
+					}
+				}
+				
+			if (!isFound)
+				objJson.list.push(objchangJson.list[i]);	
+		}
+
+		if(objJson.list.length > 0){
+			sunjsonshow(objJson.list);
+			$("#sun-json-show").css("display","block");
+		}	
+		$('#myModal').modal('hide');
+	})
+		
+  	function sunjsonshow(objJsonlist){
+		$(".sun-json-show-tbody").empty();
+
+		$.each(objJsonlist, function (id, val) {
+			$(".sun-json-show-tbody").append("<tr><td>"+val.PATIENT_NAME+"</td><td>"+val.PATIENT_SEX+"</td><td>"+val.PATIENT_AGE+"</td><td>"+val.MODALITIES+"</td><td>"+val.CREATION_DTTM+"</td><td>"+val.STUDY_DTTM+"</td><td>"+val.INSTITUTION+"</td><td><a href="+val.URL+" target=\"_blank\"><i class='icon-picture'></i></a></td><td class=\"sun-json-show-delete\"><i class=\"icon-trash\"></i></td></tr>");					
+		});
+
+		$("#med").val(JSON.stringify(objJson)); 
+	}
+  
+  	$(".sun-json-show-tbody").on("click",".sun-json-show-delete",function(){
+		objJson.list.splice($(this).parent("tr").index('tr')-1,1);
+		sunjsonshow(objJson.list);
+	});
+
+	$("#search-bianhao").click(function(){
+		//P00302155		
+		var pid = $("#search-input-bianhao").val();
+		if(!pid){
+			alert("请输入用户编号！");
+			return;
+		}	
+		/*$.ajax({
+		   type: "GET",
+		   url: "/proxy/http/nfs.jiangxi.rimag.com.cn/80/imageList/json.php",
+		   data: "pid="+pid,
+		   dataType: "json",
+		   success: function(json){
+		   		data = json;
+				if(data.list.length > 0){
+				
+					$(".modal-search-listbox-tbody").empty();
+					
+					$.each(data.list, function (id, val) {
+					
+data.list[id]["URL"] = "/proxy/http/dcm.jiangxi.rimag.com.cn/8080/rmsweb/viewer.html?studyUID="+data.list[id].STUDY_INSTANCE_UID;
+
+					$(".modal-search-listbox-tbody").append("<tr><td><label class=\"checkbox inline\"><input type=\"checkbox\" name=\"subBox\" class=\"json-add\"  attrval="+val.STUDY_INSTANCE_UID+"></label></td><td>"+val.PATIENT_NAME+"</td><td>"+val.PATIENT_SEX+"</td><td>"+val.PATIENT_AGE+"</td><td>"+val.MODALITIES+"</td><td>"+val.CREATION_DTTM+"</td><td>"+val.STUDY_DTTM+"</td><td>"+val.INSTITUTION+"</td><td><a href="+val.URL+" target=\"_blank\"><i class='icon-picture'></i></a></td></tr>");	
+								
+					});
+			
+					$(".modal-search-listbox").css("display","block");
+				}else{
+					alert("没有搜索到此信息！");
+				}	
+		   }		   
+		});*/
+		
+	  data = {"list":[{"STUDY_KEY":"21524","PATIENT_ID":"P00302155","PATIENT_NAME":"LiXiaoYing","PATIENT_SEX":"F","PATIENT_AGE1":"52","PATIENT_AGE2":"051Y","SERIES_COUNT":"6","INSTANCE_COUNT":"66","MODALITIES":"CT\\OT\\SR","CREATION_DTTM":"2016-01-02 11:07:24","STUDY_DTTM":"2016-01-02 11:24:23","INSTITUTION":"FENYI PEOPLE HOSPITAL","STUDY_INSTANCE_UID":"1.2.840.40823.1.1.1.1665.1451703894.996.309.946","SOURCE_AETITLE":"JXXYSFYXRMYYCT","ACCESSION_NO":"CT052753","STUDY_ID":"12204","FILM_Printed":"1","REPORT_HISID":"8","REPORT_DRID":"158","AW_Printed":null,"REPORT":"1","PATIENT_AGE":"52"},{"STUDY_KEY":"21525","PATIENT_ID":"P00302155","PATIENT_NAME":"LiXiaoYing2222","PATIENT_SEX":"F","PATIENT_AGE1":"52","PATIENT_AGE2":"051Y","SERIES_COUNT":"6","INSTANCE_COUNT":"66","MODALITIES":"CT\\OT\\SR","CREATION_DTTM":"2016-01-02 11:07:24","STUDY_DTTM":"2016-01-02 11:24:23","INSTITUTION":"FENYI PEOPLE HOSPITAL","STUDY_INSTANCE_UID":"2.2.840.40823.1.1.1.1665.1451703894.996.309.946","SOURCE_AETITLE":"JXXYSFYXRMYYCT","ACCESSION_NO":"CT052753","STUDY_ID":"12204","FILM_Printed":"1","REPORT_HISID":"8","REPORT_DRID":"158","AW_Printed":null,"REPORT":"1","PATIENT_AGE":"52"},{"STUDY_KEY":"21526","PATIENT_ID":"P00302155","PATIENT_NAME":"LiXiaoYing333","PATIENT_SEX":"F","PATIENT_AGE1":"52","PATIENT_AGE2":"051Y","SERIES_COUNT":"6","INSTANCE_COUNT":"66","MODALITIES":"CT\\OT\\SR","CREATION_DTTM":"2016-01-02 11:07:24","STUDY_DTTM":"2016-01-02 11:24:23","INSTITUTION":"FENYI PEOPLE HOSPITAL","STUDY_INSTANCE_UID":"3.2.840.40823.1.1.1.1665.1451703894.996.309.946","SOURCE_AETITLE":"JXXYSFYXRMYYCT","ACCESSION_NO":"CT052753","STUDY_ID":"12204","FILM_Printed":"1","REPORT_HISID":"8","REPORT_DRID":"158","AW_Printed":null,"REPORT":"1","PATIENT_AGE":"52"}]};
+	  
+	  	if(data.list.length > 0){
+
+			$(".modal-search-listbox-tbody").empty();
+			
+			$.each(data.list, function (id, val) {
+			
+			data.list[id]["URL"] = "http://dcm.jiangxi.rimag.com.cn:8080/rmsweb/viewer.html?studyUID="+data.list[id].STUDY_INSTANCE_UID;
+
+			$(".modal-search-listbox-tbody").append("<tr><td><label class=\"checkbox inline\"><input type=\"checkbox\" name=\"subBox\" class=\"json-add\"  attrval="+val.STUDY_INSTANCE_UID+"></label></td><td>"+val.PATIENT_NAME+"</td><td>"+val.PATIENT_SEX+"</td><td>"+val.PATIENT_AGE+"</td><td>"+val.MODALITIES+"</td><td>"+val.CREATION_DTTM+"</td><td>"+val.STUDY_DTTM+"</td><td>"+val.INSTITUTION+"</td><td><a href="+val.URL+" target=\"_blank\"><i class='icon-picture'></i></a></td></tr>");	
+						
+			});
+	
+			$(".modal-search-listbox").css("display","block");
+			
+		 }			
+	})
+
+
+
+function utf16to8(str) { //转码 
+	var out, i, len, c; 
+	out = ""; 
+	len = str.length; 
+	for (i = 0; i < len; i++) { 
+		c = str.charCodeAt(i); 
+		if ((c >= 0x0001) && (c <= 0x007F)) { 
+			out += str.charAt(i); 
+		} else if (c > 0x07FF) { 
+			out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F)); 
+			out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F)); 
+			out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F)); 
+		} else { 
+			out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F)); 
+			out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F)); 
+		} 
+	} 
+	return out; 
+}
+		
+	var QrCodeId;
+	
+	$("#QRCode-btn").click(function(){
+	
+		var jsonQRCodeDescription = "";
+		var url = window.location.host;
+
+		if(url.indexOf(":")){
+			  url = url.split(":");
+		}
+					
+		$.ajax({
+		    url: "http://wlyy.519e.com.cn:100/index.php/Index/GetQrCode",
+			contentType: "application/json",
+			cache: "false",
+			type: "POST",
+			processData: false,
+			data: JSON.stringify({
+				Description: jsonQRCodeDescription
+			}),   
+		    success: function(json){		   
+			    $("#code").empty();
+				if(json.Result.QrCodeId!=null){
+					QrCodeId = json.Result.QrCodeId; 
+					text = "http://wlyy.519e.com.cn/index.php/clinic/apply/codeuploadfile?QrCodeId="+QrCodeId;
+					console.log(text);
+					//$("#code").qrcode(utf16to8(text)); 
+					$('#code').qrcode({
+						text:utf16to8(text),//二维码包含的内容，默认只支持英文内容,中文会乱码，通过utf16to8转码可支持中文下载
+						width: 145,//宽度，默认是256
+						height: 145,//高度，默认是256，建议宽度和高度保持一致，否则不容易被识别
+						typeNumber: -1,//计算模式，默认是-1
+					});
+					//setInterval(getsettimeoutQR,3000); 
+					int = setInterval(getsettimeoutQR,3000); 
+			    }	   
+		   }
+		});
+		$(this).css("display","none");
+		$("#QRCode-box").css("display","block");
+	});
+
+	var getsettimeoutQRJSON;
+	function getsettimeoutQR(){
+
+		/*var url = window.location.host;
+
+		if(url.indexOf(":")){
+		   url = url.split(":");
+		}*/					
+		$.ajax({		   
+			url: "http://wlyy.519e.com.cn:100/index.php/Index/GetFileBinding",
+			contentType: "application/json",
+			cache: "false",
+			type: "POST",
+			dataType: 'json',
+			data: JSON.stringify({
+				QrCodeId: QrCodeId
+			}),   
+			success: function(json){ //console.log(json);
+			
+			  getsettimeoutQRJSON = json;
+		      if(json.StatusCode == 0){ 
+
+					/*var json = {"StatusCode":0,"Message":null,"result":[{"Name":"\u75c5\u4f8b\u56fe\u7247","ExtName":"png","Url":"https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=611834776,3845409433&amp;fm=58","ThumbnailUrl":"https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=611834776,3845409433&amp;fm=58"},{"Name":"\u75c5\u4f8b\u56fe\u7247","ExtName":"png","Url":"http:\/\/cdn.bitcare.cn\/Image\/OnlineClinic\/Consultation\/c694c35c-06bf-435b-bab5-f36f0b4cd917.png","ThumbnailUrl":"http:\/\/cdn.bitcare.cn\/Image\/OnlineClinic\/Consultation\/c694c35c-06bf-435b-bab5-f36f0b4cd917_s.png"},{"Name":"\u75c5\u4f8b\u56fe\u7247","ExtName":"png","Url":"https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2823961627,3572677526&amp;fm=58","ThumbnailUrl":"https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2823961627,3572677526&amp;fm=58"}]};*/
+					
+					if($(".dg-main-center .jiugrid").length < 1){
+						for (var i=0;i<json.result.length;i++){	
+							$(".dg-main-center").append('<div class="jiugrid"><input type="checkbox" checked class="QRcheckbox"><img src='+json.result[i].ThumbnailUrl+'></div>');
+						}	
+						checkboxjson.list = [];
+						checkboxjsonUrl.list = [];
+						$(".QRcheckbox:checkbox").each(function(){
+							if(this.checked == true){
+								checkboxjson.list.push(json.result[$(this).parent(".jiugrid").index('.jiugrid')]);
+								checkboxjsonUrl.list.push(json.result[$(this).parent(".jiugrid").index('.jiugrid')].Url);		
+								$("#checkboxjsonUrl").val(JSON.stringify(checkboxjsonUrl)); 
+							}		
+						});						
+						clearTimeout(int);						
+						anginint = setInterval(getsettimeoutQR,3000); 
+					}
+				
+					if($(".dg-main-center .jiugrid").length > 0){
+						$(".dg-main-center").empty();
+
+						for (var i=0;i<json.result.length;i++){		
+							var isFound = false;
+							for (var j=0;j<checkboxjson.list.length;j++){
+									if(json.result[i].Url == checkboxjson.list[j].Url){
+										isFound = true;
+										$(".dg-main-center").append('<div class="jiugrid"><input type="checkbox" checked class="QRcheckbox"><img src='+json.result[i].ThumbnailUrl+'></div>');
+										break;
+									}
+								}
+								
+							if (!isFound)
+								$(".dg-main-center").append('<div class="jiugrid"><input type="checkbox" class="QRcheckbox"><img src='+json.result[i].ThumbnailUrl+'></div>');
+						}
+	
+						checkboxjson.list = [];
+						checkboxjsonUrl.list = [];
+						$(".QRcheckbox:checkbox").each(function(){
+							if(this.checked == true){
+								checkboxjson.list.push(json.result[$(this).parent(".jiugrid").index('.jiugrid')]);
+								checkboxjsonUrl.list.push(json.result[$(this).parent(".jiugrid").index('.jiugrid')].Url);		
+								$("#checkboxjsonUrl").val(JSON.stringify(checkboxjsonUrl)); 
+							}		
+						});
+					}
+		        }				
+		   }
+	   }); 	
+    }
+	
+	//用于保存checkbox的list索引，用于对应查询返回的json.Result索引值
+    var checkboxjson = {};
+        checkboxjson.list = [];
+		
+	//用于保存对应查询返回的json.Result索引值对应的URl,以便于提交
+    var checkboxjsonUrl = {};
+        checkboxjsonUrl.list = [];
+			
+	$('.dg-main-center').on("click","input",function() { 
+		checkboxjson.list = [];
+		checkboxjsonUrl.list = [];		
+		$(".QRcheckbox:checkbox").each(function(){
+			if(this.checked == true){
+				checkboxjson.list.push(getsettimeoutQRJSON.result[$(this).parent(".jiugrid").index('.jiugrid')]);
+				checkboxjsonUrl.list.push(getsettimeoutQRJSON.result[$(this).parent(".jiugrid").index('.jiugrid')].Url);
+				$("#checkboxjsonUrl").val(JSON.stringify(checkboxjsonUrl)); 
+			}		
+		});
+					
+	});
+
+
+	$(".btnok").click(function(){
+		//checkboxjsonUrl 
+		console.log(checkboxjsonUrl);alert("我是提交按钮！");
+	})
+	/*$(".btnok").click(function(){
+		//checkboxjsonUrl 
+		$(checkboxjsonUrl.list).each(function(){
+			$.ajax({
+              type: "POST",
+              url: "/index.php/Clinic/Apply/fileupload",
+              data: "message="+this
+            });
+		})
+	})*/
+	
+	
+});
+</script>
+</body>
+</html>

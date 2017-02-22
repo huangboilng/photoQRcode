@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>倍康二维码扫描图片上传手机端</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="http://www.ceshi.com/public/css/bootstrap3.min.css" />
+	<link rel="stylesheet" type="text/css" href="http://www.ceshi.com/public/css/uploadify.css" />
+	<link href="http://www.ceshi.com/public/css/Codeuploadfile.css" rel="stylesheet">
+	
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    
+	<div class="container">	
+	  <div class="row">		  
+		<div class="col-lg-12 col-md-12">		
+			<div class="dg-main">
+				<div class="dg-main-top">
+					<p class="text-center">上传图片</p>
+				</div>
+				<div class="dg-main-center">
+				  
+				</div>
+				<div class="dg-main-bottom">
+					<button type="button" class="btn btn-default btnok">确认</button>
+				</div>
+			</div>
+		</div>
+	  </div>
+	</div> 
+	
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="myModal">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+<img class="loadingimg" src="http://www.ceshi.com/public/img/load.gif"/>
+    </div>
+  </div>
+</div>	
+	
+<script src="http://www.ceshi.com/public/js/jquery.min.js"></script>	
+<script type="text/javascript" src="http://www.ceshi.com/public/js/bootstrap.min.js"></script>
+<script src="http://www.ceshi.com/public/js/jquery.ajaxfileupload.js"></script>
+
+<script type="text/javascript">
+
+$(function() {
+
+	function GetQueryString(name) { 
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i"); 
+		var r = window.location.search.substr(1).match(reg); 
+		if (r!=null) return (r[2]); return null; 
+	} 
+	
+	var QrCodeId = GetQueryString("QrCodeId");
+
+	var objJson = {};
+	objJson.Files = [];
+	objJson["QrCodeId"] = QrCodeId;
+	
+	if(QrCodeId!=null){
+	
+		var json = {"StatusCode": 0,"Message": null,"result": [{"Name": "病例图片A","ExtName": "jpg","Url": "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2823961627,3572677526&amp;fm=58","ThumbnailUrl": "https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2823961627,3572677526&amp;fm=58"},{"Name": "病例图片B","ExtName": "jpg","Url": "http://cdn.bitcare.cn/Image/OnlineClinic/Consultation/c694c35c-06bf-435b-bab5-f36f0b4cd917_s.png","ThumbnailUrl": "http://cdn.bitcare.cn/Image/OnlineClinic/Consultation/c694c35c-06bf-435b-bab5-f36f0b4cd917_s.png "}]};
+		
+		if(json.StatusCode == 0){ 
+	
+			$.each(json.result,function(i){
+				objJson.Files.push(json.result[i]);
+				$(".dg-main-center").append('<div class="jiugrid"><i class=\"deletejson\">×</i><img src='+json.result[i].ThumbnailUrl+'></div>');
+			});
+			
+			$(".dg-main-center").append('<div class="jiugrid"><input type="file" name="File" class="fileToUpload" id="File" accept="image/*" capture="camera" /><span class="jiugrid-addicon"></span></div>');
+
+		}
+
+		if(json.StatusCode == 1){
+		
+			$(".dg-main-center").append('<div class="jiugrid"><input type="file" name="File" class="fileToUpload" id="File" accept="image/*" capture="camera" /><span class="jiugrid-addicon"></span></div>');
+			
+		}
+				
+		/*$.ajax({		   
+		    url: "http://"+window.location.host+":100/index.php/Index/GetFileBinding",
+			contentType: "application/json",
+			cache: "false",
+			type: "POST",
+			dataType: 'json',
+			data: JSON.stringify({
+				QrCodeId: QrCodeId
+			}),   
+		    success: function(json){
+				if(json.StatusCode == 0){ 
+	
+					$.each(json.result,function(i){
+						objJson.Files.push(json.result[i]);
+						$(".dg-main-center").append('<div class="jiugrid"><i class=\"deletejson\">×</i><img src='+json.result[i].ThumbnailUrl+'></div>');
+					});
+					
+					$(".dg-main-center").append('<div class="jiugrid"><input type="file" name="File" class="fileToUpload" id="File" accept="image/*" capture="camera" /><span class="jiugrid-addicon"></span></div>');
+
+				}
+
+				if(json.StatusCode == 1){
+					$(".dg-main-center").append('<div class="jiugrid"><input type="file" name="File" class="fileToUpload" id="File" accept="image/*" capture="camera" /><span class="jiugrid-addicon"></span></div>');
+				}				
+		   }
+		});*/
+	}
+	
+
+	$('.dg-main-center').on("click",".jiugrid-addicon",function(){
+		$(this).siblings(".fileToUpload[type=file]").click();
+	});
+
+	$('.dg-main-center').on("change",".fileToUpload",function(){
+		var that = $(this).parent(".jiugrid").index('.jiugrid');
+        createUploadFile(that);
+    });
+
+
+	function createUploadFile(that) {
+		$('#myModal').modal({backdrop: 'static'});		
+		
+		var data = {"ActionRequestID":"275182c8-b834-4f90-a7c1-ff45ff16b198","StatusCode":0,"StatusTag":"success","Message":"文件上传成功","Result":{"small":"http://cdn.bitcare.cn/Image/OnlineClinic/Consultation/c694c35c-06bf-435b-bab5-f36f0b4cd917_s.png","origin":"http://cdn.bitcare.cn/Image/OnlineClinic/Consultation/c694c35c-06bf-435b-bab5-f36f0b4cd917.png"}};
+				
+		var pushjson = {};
+		pushjson = {};
+		pushjson["Name"] = "病例图片";
+		pushjson["ExtName"] = "png";
+		pushjson["Url"] = data.Result['origin'];
+		pushjson["ThumbnailUrl"] = data.Result['small'];
+		
+		objJson.Files.push(pushjson);
+		
+		$(".dg-main-center .jiugrid").eq(that).empty();
+		$(".dg-main-center .jiugrid").eq(that).append("<i class=\"deletejson\">×</i><img src="+data.Result['small']+">");
+		
+		$(".dg-main-center").append('<div class="jiugrid"><input type="file" name="File" class="fileToUpload" id="File" accept="image/*" capture="camera" /><span class="jiugrid-addicon"></span></div>');
+		
+		$('#myModal').modal('hide');		
+		/*
+		$('#myModal').modal({backdrop: 'static'});
+		var data = { Key: '5dbf7254bf3faf37'};
+		$.ajaxFileUpload({
+			url: '/proxy/http/upload.519e.com.cn/80/Image/Upload?AuthToken=01e5022f-32de-4f9a-ade8-d241ce1b71d4', //用于文件上传的服务器端请求地址
+			secureuri: false, //是否需要安全协议，一般设置为false
+			fileElementId: 'File', //文件上传域的ID
+			data: data,        //传递的参数
+			dataType: 'json', //返回值类型 一般设置为json
+			success: function (data, status){
+				$('#myModal').modal('hide');
+				
+				var pushjson = {};
+				pushjson = {};
+				pushjson["Name"] = "病例图片";
+				pushjson["ExtName"] = "png";
+				pushjson["Url"] = data.Result['origin'];
+				pushjson["ThumbnailUrl"] = data.Result['small'];
+				
+				objJson.Files.push(pushjson);
+				
+				$(".dg-main-center .jiugrid").eq(that).empty();
+				$(".dg-main-center .jiugrid").eq(that).append("<i class=\"deletejson\">×</i><img src="+data.Result['small']+">");
+				
+				$(".dg-main-center").append('<div class="jiugrid"><input type="file" name="File" class="fileToUpload" id="File" accept="image/*" capture="camera" /><span class="jiugrid-addicon"></span></div>');
+				
+			},
+			error: function (data, status, e){
+				$('#myModal').modal('hide');
+				alert("上传失败！");
+			}
+		});*/
+	}
+
+	$(".btnok").click(function(){ 
+		console.log(objJson);
+		alert("我是上传按钮");
+		
+		/*if(objJson.Files.length > 0){		
+			$.ajax({		   
+				url: "http://"+window.location.host+":100/index.php/Index/PostFileBinding",
+				contentType: "application/json",
+				cache: "false",
+				type: "POST",
+				processData: false,
+				data: JSON.stringify(
+					   objJson
+				),   
+				success: function(json){
+					if(json.StatusCode == 0){ 				
+						alert("上传成功！");
+					}
+	
+					if(json.StatusCode == 1){
+						alert("上传失败！");
+					}
+				}	
+			 });
+		 }*/
+	});
+	
+	
+	$('.dg-main-center').on("click",".deletejson",function(){
+		var deletejsonval = $(this).parent(".jiugrid").index(".jiugrid");
+		$(".dg-main-center .jiugrid").eq(deletejsonval).remove();
+		objJson.Files.splice(deletejsonval, 1); 
+		
+		console.log(objJson);
+	})
+	
+});
+
+</script>
+
+  </body>
+</html>
